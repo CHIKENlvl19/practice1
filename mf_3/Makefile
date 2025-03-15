@@ -1,54 +1,41 @@
-# Makefile
-
-# Цель сборки
 TARGET = exec
-
-# Исходный файл
 SRC = wassup.cpp
-
-# Препроцессированный файл
-PREPROCESSED = $(SRC:.cpp=.ii)
-
-# Скомпилированный файл
-ASSEMBLY = $(SRC:.cpp=.s)
-
-# Объектный файл
-OBJECT = $(SRC:.cpp=.o)
-
-# Компилятор
-CXX = g++
-
-# Ассемблер
-AS = as
-
-# Флаги компиляции
 CXXFLAGS = -Wall -Wextra -g3 -std=c++17
 
-# Правило для сборки цели
-$(TARGET): $(OBJECT)
-    @echo "Линковка (компоновка): g++ $(OBJECT) -o $(TARGET)"
-    $(CXX) $(OBJECT) -o $(TARGET)
+$(TARGET): %.o
+	@echo "Р›РёРЅРѕРІРєР° (РєРѕРјРїРѕРЅРѕРІРєР° РїСЂРѕРµРєС‚Р°)..."
+	g++ wassup.o -o $(TARGET)
+	@echo "Р“РѕС‚РѕРІРѕ!"
+	@echo
 
-# Правило для ассемблирования
-$(OBJECT): $(ASSEMBLY)
-    @echo "Ассемблирование: $(AS) $(ASSEMBLY) -o $(OBJECT)"
-    $(AS) $(ASSEMBLY) -o $(OBJECT)
+%.o: %.s
+	@echo "РђСЃСЃРµРјР±Р»РёСЂРѕРІР°РЅРёРµ..."
+	as wassup.s -o wassup.o
+	@echo "Р“РѕС‚РѕРІРѕ!"
+	@echo
 
-# Правило для компиляции
-$(ASSEMBLY): $(PREPROCESSED)
-    @echo "Компиляция: $(CXX) -S $(PREPROCESSED) -o $(ASSEMBLY)"
-    $(CXX) -S $(PREPROCESSED) -o $(ASSEMBLY)
+%.s: %.ii
+	@echo "РљРѕРјРїРёР»СЏС†РёСЏ..."
+	g++ -S wassup.ii -o wassup.s
+	@echo "Р“РѕС‚РѕРІРѕ!"
+	@echo
 
-# Правило для препроцессинга
-$(PREPROCESSED): $(SRC)
-    @echo "Препроцессинг: $(CXX) -E $(SRC) -o $(PREPROCESSED)"
-    $(CXX) -E $(SRC) -o $(PREPROCESSED)
+%.ii: wassup.cpp
+	@echo "РџСЂРµРїСЂРѕС†РµСЃСЃРёРЅРі..."
+	g++ -E wassup.cpp -o wassup.ii
+	@echo "Р“РѕС‚РѕРІРѕ!"
+	@echo
 
-# Правило для очистки
+run:
+	@echo "Р—Р°РїСѓСЃРєР°СЋ РёСЃРїРѕР»РЅСЏРµРјС‹Р№ С„Р°Р№Р»..."
+	./$(TARGET)
+
 clean:
-    @echo "Очистка: удаляем $(PREPROCESSED), $(ASSEMBLY), $(OBJECT) и $(TARGET)"
-    rm -f $(PREPROCESSED) $(ASSEMBLY) $(OBJECT) $(TARGET)
+	@echo "РџСЂРѕРІРѕР¶Сѓ РѕС‡РёСЃС‚РєСѓ..."
+	rm -f wassup.o wassup.s wassup.ii $(TARGET)
+	@echo "Р“РѕС‚РѕРІРѕ!"
+	@echo
 
-# Фиктивные цели
 .PHONY: all clean
+
 all: $(TARGET)
